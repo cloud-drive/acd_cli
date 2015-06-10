@@ -1,8 +1,6 @@
-|Donate| |Gitter|
-
-|PyPiVersion| |PyVersion| |Status| |License|
-
-|PyPiDownloadsMonth|
+|Donate| |Gitter|  
+|PyPiVersion| |PyVersion| |PyPiDownloadsMonth|  
+|Status| |License| 
 
 acd\_cli
 ========
