@@ -299,7 +299,7 @@ Recent Changes
 * automatic resuming of downloads
 
 
-.. |Donate| image:: https://raw.githubusercontent.com/yadayada/acd_cli/master/docs/img/donate.png
+.. |Donate| image:: https://img.shields.io/badge/paypal-donate-blue.svg
    :alt: Donate via PayPal
    :target: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V4V4HVSAH4VW8
 
