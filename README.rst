@@ -1,5 +1,7 @@
 |Donate| |Gitter|
+
 |PyPiVersion| |PyVersion| |Status| |License|
+
 |PyPiDownloadsMonth|
 
 acd\_cli
