@@ -209,7 +209,7 @@ def create_upload_jobs(path: str, parent_id: str, overwr: bool, force: bool, ded
         return 0
 
 
-def traverse_ul_dir(directory: str, parent_id: str, overwr: bool, force: bool, dedup: bool,
+def traverse_ul_dir(directory: str, parent_id: str, overwr: bool, force: bool, dedup: bool, redup: bool,
                     exclude: list, jobs: list) -> int:
     """Duplicates local directory structure."""
 
@@ -248,17 +248,25 @@ def traverse_ul_dir(directory: str, parent_id: str, overwr: bool, force: bool, d
     ret_val = 0
     for entry in entries:
         full_path = os.path.join(real_path, entry)
-        ret_val |= create_upload_jobs(full_path, curr_node.id, overwr, force, dedup, exclude, jobs)
+        ret_val |= create_upload_jobs(full_path, curr_node.id, overwr, force, dedup, redup, exclude, jobs)
 
     return ret_val
 
 
 @retry_on(RETRY_RETVALS)
-def upload_file(path: str, parent_id: str, overwr: bool, force: bool, dedup: bool,
+def upload_file(path: str, parent_id: str, overwr: bool, force: bool, dedup: bool, redup: bool,
                 pg_handler: progress.FileProgress=None) -> RetryRetVal:
     short_nm = os.path.basename(path)
 
     logger.info('Uploading %s' % path)
+
+    if redup and query.file_size_exists(os.path.getsize(path)):
+        nodes = query.find_md5(hashing.hash_file(path))
+        nodes = format.PathFormatter(nodes)
+        if len(nodes) > 0:
+            # print('Removing duplicate files of "%s".' % short_nm)
+            logger.info('Location of duplicates (to be removed): %s' % nodes)
+            trash_action(nodes)
 
     cached_file = query.get_node(parent_id).get_child(short_nm)
     file_id = None
@@ -549,7 +557,7 @@ def upload_action(args: argparse.Namespace) -> int:
             continue
 
         ret_val |= create_upload_jobs(path, args.parent, args.overwrite, args.force,
-                                      args.deduplicate, excl_re, jobs)
+                                      args.deduplicate, args.remove_duplicates, excl_re, jobs)
 
     ql = QueuedLoader(args.max_connections, max_retries=args.max_retries)
     ql.add_jobs(jobs)
@@ -925,7 +933,9 @@ def main():
                                 'modification time and local/remote file sizes do not match.')
     upload_sp.add_argument('--force', '-f', action='store_true', help='force overwrite')
     upload_sp.add_argument('--deduplicate', '-d', action='store_true',
-                           help='exclude duplicate files from upload')
+                           help='exclude duplicate files from upload [md5 hash comparison]')
+    upload_sp.add_argument('--remove-duplicates', '-rd', action='store_true',
+                           help='remove duplicate files before upload [md5 hash comparison]')
     upload_sp.add_argument('path', nargs='+', help='a path to a local file or directory')
     upload_sp.add_argument('parent', help='remote parent folder')
     upload_sp.set_defaults(func=upload_action)
