@@ -64,6 +64,7 @@ class MultiProgress(object):
         self._last_speeds.append(speed)
 
         avg_speed = float(sum(self._last_speeds)) / len(self._last_speeds)
+        eta = float(total_sz - current_sz) / (avg_speed) if avg_speed else 0
 
         self._last_inv, self._last_prog = t, current_sz
 
@@ -71,10 +72,10 @@ class MultiProgress(object):
         completed = "#" * int(percentage / 3)
         spaces = " " * (33 - len(completed))
         item_width = floor(log10(total_items))
-        sys.stdout.write('[%s%s] %s%% of %s  %s/%d %s\r'
+        sys.stdout.write('\r[%s%s] %s%% of %s  %s/%d %s  %s\x1b[K'
                          % (completed, spaces, ('%3.1f' % percentage).rjust(5),
                             (file_size_str(total_sz)).rjust(7), str(done).rjust(item_width + 1), total_items,
-                            (speed_str(avg_speed)).rjust(10)))
+                            (speed_str(avg_speed)).rjust(10), time_str(eta)))
         sys.stdout.flush()
 
 
@@ -92,3 +93,21 @@ def file_size_str(num: int, suffix='B') -> str:
             return "%3.0f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f%s%s" % (num, 'Yi', suffix)
+
+def time_str(num: float) -> str:
+    if num < 0.0:
+        return '0 sec'
+
+    if num < 60.0:
+        seconds = int(round(num, ndigits=0))
+        return str(seconds) + ' sec'
+    elif num < 3600.0:
+        seconds = int(round(num%60.0, ndigits=0))
+        minutes = int(round((num-seconds) / 60.0, ndigits=0))
+        return str(minutes+1) + ' min'
+    elif num < 86400.0:
+        seconds = int(round(num%60.0, ndigits=0))
+        minutes = int(round(num%3600.0 / 60.0, ndigits=0))
+        hours = int(round(( (num-minutes) / 3600.0), ndigits=0))
+        return str(hours) + ' h ' + str(minutes+1) + ' min'
+    return 'more than a day'
