@@ -1,6 +1,4 @@
-|Donate| |Gitter|  
-|PyPiVersion| |PyVersion| |PyPiDownloadsMonth|  
-|Status| |License| 
+|Donate| |Gitter| |PyVersion| |Status| |License| |PyPiVersion| |PyPiDownloadsMonth|
 
 acd\_cli
 ========
@@ -31,7 +29,7 @@ Quick start
 Installation
 ~~~~~~~~~~~~
 
-The easiest way is to directly install from pypi. Please check which pip command is
+The easiest way is to directly install from PyPI. Please check which pip command is
 appropriate for Python 3 packages in your environment. I will be using 'pip3' in the examples.
 ::
 
@@ -43,11 +41,6 @@ The most up-to-date way is to directly install from github.
 
    pip3 install --upgrade git+https://github.com/yadayada/acd_cli.git
 
-
-To install from a downloaded or cloned directory, run pip in the project's root directory like so:
-::
-
-    pip3 install --upgrade .
 
 If you do not want to install, have a look at the necessary dependencies_.
 
@@ -231,9 +224,18 @@ more precisely at https://www.amazon.com/ap/adam.
 Known Issues
 ------------
 
+It is currently not possible to upload files using Python 3.2.3.
+
+If you encounter Unicode problems, check that your locale is set correctly or use the ``--utf``
+argument to force the script to use UTF-8 output encoding.
+Windows users may try to execute the provided `reg file <assets/win_codepage.reg>`_
+(tested with Windows 8.1) to set the command line interface encoding to cp65001.
+
+
 API Restrictions
 ~~~~~~~~~~~~~~~~
 
+- at the time being, it is not advisable to upload files larger than 9GiB
 - uploads of large files >10 GiB may be successful, yet a timeout error is displayed (please check manually)
 - the maximum (upload) file size seems to be in the range of 40 and 100 GiB
 - storage of node names is case-preserving, but not case-sensitive (this concerns Linux users mainly)
@@ -316,21 +318,18 @@ Recent Changes
    :target: https://gitter.im/cloud-drive/acd_cli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 .. |PyPiVersion| image:: https://img.shields.io/pypi/v/acdcli.svg
-   :alt: PyPi version
+   :alt: PyPi
    :target: https://pypi.python.org/pypi/acdcli
 
-.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/acdcli.svg
-   :alt: Python version
-   :target: https://pypi.python.org/pypi/acdcli
+.. |PyVersion| image:: https://img.shields.io/badge/python-3.2+-blue.svg
+   :alt:
 
-.. |Status| image:: https://img.shields.io/pypi/status/acdcli.svg
-   :alt: Status
-   :target: https://pypi.python.org/pypi/acdcli
+.. |Status| image:: https://img.shields.io/badge/status-beta-yellow.svg
+   :alt:
 
-.. |License| image:: https://img.shields.io/pypi/l/acdcli.svg
-   :alt: License
-   :target: https://pypi.python.org/pypi/acdcli
+.. |License| image:: https://img.shields.io/badge/license-GPLv2+-blue.svg
+   :alt:
 
 .. |PyPiDownloadsMonth| image:: https://img.shields.io/pypi/dm/acdcli.svg
-   :alt: Downloads
+   :alt:
    :target: https://pypi.python.org/pypi/acdcli
