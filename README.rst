@@ -33,7 +33,7 @@ The easiest way is to directly install from PyPI. Please check which pip command
 appropriate for Python 3 packages in your environment. I will be using 'pip3' in the examples.
 ::
 
-   pip3 install --upgrade acdcli
+   pip3 install --upgrade --pre acdcli
 
 
 The most up-to-date way is to directly install from github.
@@ -142,6 +142,7 @@ error creating folder       64
 file size mismatch         128
 cache outdated             256
 duplicate                  512
+directory cycle           1024
 =====================    =======
 
 If multiple errors occur, their values will be compounded by a binary OR operation.

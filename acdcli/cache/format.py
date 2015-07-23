@@ -1,6 +1,5 @@
 """Formatters for query bundle iterables"""
 
-
 import os
 import sys
 
@@ -93,6 +92,7 @@ class LongIDFormatter(ListFormatter):
                 color_path(node.simple_name())
             )
 
+
 class TreeFormatter(ListFormatter):
     @staticmethod
     def __new__(cls, bunches):
@@ -103,7 +103,6 @@ class TreeFormatter(ListFormatter):
                 pre = ' ' * 4 * bunch.depth
             yield pre + color_path(bunch.node.simple_name())
             prev = bunch
-
 
 
 class IDFormatter(ListFormatter):
