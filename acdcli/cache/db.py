@@ -228,7 +228,10 @@ class Folder(Node):
 """End of 'schema'"""
 
 
-def init(path=''):
+IntegrityCheckType = dict(full=0, quick=1, none=2)
+
+
+def init(path='', check=IntegrityCheckType['full']):
     logger.info('Initializing cache with path "%s".' % os.path.realpath(path))
     db_path = os.path.join(path, DB_FILENAME)
 
@@ -263,7 +266,7 @@ def init(path=''):
             logger.critical('Error opening database.')
             return False
 
-    integrity_check()
+    integrity_check(check)
 
     if uninitialized:
         r = engine.execute('PRAGMA user_version = %i;' % DB_SCHEMA_VER)
@@ -290,8 +293,13 @@ def init(path=''):
     return True
 
 
-def integrity_check():
-    r = engine.execute('PRAGMA integrity_check;')
+def integrity_check(type_: IntegrityCheckType):
+    if type_ == IntegrityCheckType['full']:
+        r = engine.execute('PRAGMA integrity_check;')
+    elif type_ == IntegrityCheckType['quick']:
+        r = engine.execute('PRAGMA quick_check;')
+    else:
+        return
     if r.first()[0] != 'ok':
         logger.warn('Sqlite database integrity check failed. '
                     'You may need to clear the cache if you encounter any errors.')

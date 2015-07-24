@@ -33,7 +33,7 @@ for importer, modname, ispkg in walk_packages(path=plugins.__path__, prefix=plug
 for plug_mod in iter_entry_points(group='acdcli.plugins', name=None):
     __import__(plug_mod.module_name)
 
-__version__ = '0.3.0a2'
+__version__ = '0.3.0a3'
 _app_name = 'acd_cli'
 
 logger = logging.getLogger(_app_name)
@@ -876,21 +876,27 @@ def main():
     opt_parser = argparse.ArgumentParser(
         prog=_app_name, formatter_class=argparse.RawTextHelpFormatter,
         epilog='Hints: \n'
-               '  * Remote locations may be specified as path in most cases, e.g. "/folder/file", or via ID \n'
+               '  * Remote locations may be specified as path in most cases, '
+               'e.g. "/folder/file", or via ID \n'
                '  * If you need to enter a node ID that contains a leading dash (minus) sign, '
                'precede it by two dashes and a space, e.g. \'-- -xfH...\'\n'
                '  * actions marked with [+] have optional arguments'
                '')
     opt_parser.add_argument('-v', '--verbose', action='count',
-                            help='prints some info messages to stderr; use "-vv" to also get sqlalchemy info')
+                            help='prints some info messages to stderr; '
+                                 'use "-vv" to also get sqlalchemy info')
     opt_parser.add_argument('-d', '--debug', action='count',
-                            help='prints info and debug to stderr; use "-dd" to also get sqlalchemy debug messages')
+                            help='prints info and debug to stderr; '
+                                 'use "-dd" to also get sqlalchemy debug messages')
     opt_parser.add_argument('-c', '--color', default=format.ColorMode['never'],
                             choices=format.ColorMode.keys(),
                             help='"never" [default] turns coloring off, '
                                  '"always" turns coloring on '
                                  'and "auto" colors listings when stdout is a tty '
                                  '[uses the Linux-style LS_COLORS environment variable]')
+    opt_parser.add_argument('-i', '--check', default=db.IntegrityCheckType['full'],
+                            choices=db.IntegrityCheckType.keys(),
+                            help='')
     opt_parser.add_argument('-u', '--utf', action='store_true',
                             help='force utf output')
     opt_parser.add_argument('-nw', '--no-wait', action='store_true', help=argparse.SUPPRESS)
@@ -1078,7 +1084,7 @@ def main():
             sys.exit(INIT_FAILED_RETVAL)
 
     if args.func not in nocache_actions:
-        if not db.init(CACHE_PATH):
+        if not db.init(CACHE_PATH, args.check):
             sys.exit(INIT_FAILED_RETVAL)
         check_cache_age()
 
